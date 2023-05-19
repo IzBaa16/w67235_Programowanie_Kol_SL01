@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			p {
+				width: 150px;
+				height: 50px;
+			}
+            button {
+                height: 50px;
+                width: 50px;
+                border-radius: 19px;
+                margin: 10px;
+            }
+            /* table td th {
+                border: 1px solid black;
+            } */
+		</style>
+	</head>
+	<body>
+        <br>
+		<button id="button1" onclick="changeButtonBackground('button1')">
+			
+		</button>
+        <br>
+		<button id="button2" onclick="changeButtonBackground('button2')">
+			
+		</button>
+        <br>
+		<button id="button3" onclick="changeButtonBackground('button3')">
+			
+		</button>
+		<br /><br /><br />
+
+        <form class="form" name="form" method="post" novalidate>
+
+            <div class="control">
+                <label>Login: </label>
+                <input type="text" name="login" id="name1">
+                <span class="error"></span>
+            </div>
+            <div class="control">
+                <label>Email: </label>
+                <input type="text" name="email" id="lastname">
+                <span class="error"></span>
+            </div>
+            <div class="control">
+                <label>Hasło: </label>
+                <input type="password" name="password">
+                <span class="error"></span>
+            </div>
+            <div class="control">
+                <label>Potwórz Hasło: </label>
+                <input type="password" name="confirm-password">
+                <span class="error"></span>
+            </div>
+            <span>Numer telefonu i data</span><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" onclick="shower()"> 
+            <span id="toShow" style="display: none; " ><div class="control">
+                <label>Telefon: </label>
+                <input type="text" name="phone">
+                <span class="error"></span>
+            </div>
+            <div class="control">
+                <label>Data urodzenia: </label>
+                <input type="date" name="birthDate">
+                <span class="error"></span>
+            </div></span>
+    
+            <div class="control actions">
+                <input type="submit" value="Zapisz">
+            </div>
+        </form>
+        <br>
+
+<button onclick="save()"> Save </button>
+
+<table id="table">
+    <tr>
+        <th>Name</th>
+        <th>Lastname</th>
+    </tr>
+</table>
+        
+
+		<script>
+			function changeButtonBackground(id) {
+				let button1 = document.getElementById("button1");
+				let button2 = document.getElementById("button2");
+				let button3 = document.getElementById("button3");
+
+				if (id === "button1") {
+					button1.style.backgroundColor = "red";
+					setBackgroundAsDefault(button2, button3,);
+				} else if (id === "button2") {
+					button2.style.backgroundColor = "yellow";
+					setBackgroundAsDefault(button1, button3,);
+				} else if (id === "button3") {
+					button3.style.backgroundColor = "green";
+					setBackgroundAsDefault(button1, button2,);
+				}
+			}
+			function setBackgroundAsDefault(
+				element1,
+				element2,
+				element3,
+
+			) {
+				element1.style.backgroundColor = "buttonface";
+				element2.style.backgroundColor = "buttonface";
+				element3.style.backgroundColor = "buttonface";
+			}
+
+        
+
+            const form = document.querySelector('form');
+
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (validForm()) {
+        alert('Sukces');
+    }
+});
+
+const surnameField = document.querySelector("[name='login']");
+surnameField.addEventListener('input', () => {
+    if(requiredValidation(surnameField))
+    minLengthValidation(surnameField, 3);
+});
+
+const emailField = document.querySelector("[name='email']");
+emailField.addEventListener('input', () => {
+    requiredValidation(emailField);
+    minLengthValidation(emailField, 2);
+    emailValidation(emailField);
+});
+
+const passwordField = document.querySelector("[name='password']");
+passwordField.addEventListener('input', () => {
+    requiredValidation(passwordField);
+    minLengthValidation(passwordField, 6);
+    passwordValidation(passwordValidation);
+});
+
+const sexFields = document.getElementsByName('sex');
+
+sexFields.forEach(field => {
+    field.addEventListener('change', () => {
+        validSexFileds()
+    });
+});
+
+const phoneField = document.querySelector("[name='phone']");
+phoneField.addEventListener('input', () => {
+    requiredValidation(phoneField);
+    minLengthValidation(phoneField, 9);
+    maxLengthValidation(phoneField, 9);
+});
+
+phoneField.addEventListener('keypress', (event) => {
+    var charCode = (event.which) ? event.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+    }
+    return true;
+});
+
+const birthDateField = document.querySelector("[name='birthDate']");
+birthDateField.addEventListener('input', () => {
+    requiredValidation(birthDateField);
+    validAge();
+});
+
+const confirmPasswordField = document.querySelector("[name='confirm-password']");
+confirmPasswordField.addEventListener('input', () => {
+    validConfirmPassword();
+});
+
+const countyField = document.querySelector("[name='country']");
+let provinceField = document.querySelector("[name='province']");
+const province = document.querySelector('.province');
+const provinceSelect = document.querySelector('.province.select');
+countyField.addEventListener('change', () => {
+    const result = requiredValidation(countyField);
+
+    if (countyField.value === "Polska") {
+        province.hidden = true;
+        provinceSelect.hidden = false;
+        provinceField = document.querySelector(".province.select [name='province']");
+
+        provinceField.removeEventListener('input', provinceField);
+        provinceField.addEventListener('change', () => {
+            validProvince();
+        });
+    }
+    else {
+        province.hidden = false;
+        provinceSelect.hidden = true;
+
+        provinceField = document.querySelector("[name='province']");
+
+        provinceField.removeEventListener('change', provinceField);
+        provinceField.addEventListener('input', () => {
+            validProvince();
+        });
+    }
+
+    provinceField.disabled = result;
+});
+
+const addressField = document.querySelector("[name='address']");
+const contactAddressField = document.querySelector("[name='contactAddress']");
+
+function validProvince() {
+    const result = requiredValidation(provinceField);
+    addressField.disabled = result;
+    contactAddressField.disabled = result;
+}
+
+addressField.addEventListener('input', () => {
+    requiredValidation(addressField);
+    minLengthValidation(addressField, 3);
+});
+contactAddressField.addEventListener('input', () => {
+    requiredValidation(contactAddressField);
+    minLengthValidation(contactAddressField, 3);
+});
+
+
+const checkboxField = document.querySelector("[name='hasSameContactAddress']");
+const contactAddress = document.querySelector(".contactAddress");
+checkboxField.addEventListener('change', () => {
+    contactAddress.hidden = checkboxField.checked;
+});
+
+function requiredValidation(field) {
+
+    const errorField = document.querySelector(`[name='${field.name}'] + span.error`);
+    if (!field.value || field.value === '') {
+
+        errorField.innerHTML = 'To pole jest wymagane';
+        return true;
+    }
+    else {
+
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+
+function minLengthValidation(field, minLength = 0) {
+    const errorField = document.querySelector(`[name='${field.name}'] + span.error`);
+    if (field.value.length < minLength) {
+
+        errorField.innerHTML = `To pole musi mieć conajmniej ${minLength} znaków`;
+        return true;
+    }
+    else {
+
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+
+function maxLengthValidation(field, maxLength = 0) {
+    const errorField = document.querySelector(`[name='${field.name}'] + span.error`);
+    if (field.value.length > maxLength) {
+
+        errorField.innerHTML = `To pole musi mieć najwyżej ${maxLength} znaków`;
+        return true;
+    }
+    else {
+
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+
+function emailValidation(field) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errorField = document.querySelector(`[name='${field.name}'] + span.error`);
+    if (!emailRegex.test(field.value)) {
+
+        errorField.innerHTML = 'Proszę podać poprawny adres e-mail.';
+        return true;
+    }
+    else {
+
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+
+function passwordValidation(field) {
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{}|;':",./<>?])[0-9a-zA-Z!@#$%^&*()_+\-=[\]{}|;':",./<>?]{8,}$/;
+    const errorField = document.querySelector(`[name='${field.name}'] + span.error`);
+    if (!passwordRegex.test(field.value)) {
+
+        errorField.innerHTML = 'Hasło mieć co najmniej 8 znaków i zawierać przynajmniej jedną cyfrę, jedną małą literę i jedną dużą literę.';
+        return true;
+    }
+    else {
+
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+
+function validAge() {
+    const today = new Date();
+    const date = new Date(birthDateField.value);
+
+    var age = today.getFullYear() - date.getFullYear();
+    var m = today.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+        age--;
+    }
+
+    const errorField = document.querySelector('[name="birthDate"] + span.error');
+
+    errorField.innerHTML = age < 18 ? 'Musisz być pełnoletni' : '';
+
+    return age < 18;
+}
+
+function validConfirmPassword() {
+    const errorField = document.querySelector(`[name='confirm-password'] + span.error`);
+    if (confirmPasswordField.value !== passwordField.value) {
+        errorField.innerHTML = 'Hasła nie są takie same';
+        return true;
+    }
+    else {
+        errorField.innerHTML = '';
+        return false;
+    }
+}
+function shower() {
+    if(document.getElementById("vehicle1").checked) {
+        document.getElementById("toShow").style.display = "block";
+    } else {
+        document.getElementById("toShow").style.display = "none";
+    
+        }
+    }
+
+
+function validForm() {
+    if (requiredValidation(nameField) || requiredValidation(surnameField) || requiredValidation(emailField)
+        || requiredValidation(passwordField) || validSexFileds() || requiredValidation(phoneField) || requiredValidation(provinceField)
+        || requiredValidation(birthDateField) || requiredValidation(countyField)
+        || minLengthValidation(nameField, 2) || minLengthValidation(surnameField, 2) || minLengthValidation(emailField, 2)
+        || minLengthValidation(passwordField, 8) || minLengthValidation(nameField, 2) || minLengthValidation(phoneField, 9)
+        || maxLengthValidation(phoneField, 9) || emailValidation(emailField) || passwordValidation(passwordField) || validAge()
+        || validConfirmPassword() || requiredValidation(addressField) || minLengthValidation(addressField, 3)
+        || (!checkboxField.checked && (requiredValidation(contactAddressField) || minLengthValidation(contactAddressField, 3)))) {
+        return false;
+    }
+
+    return true;
+}
+
+            function save(){
+let name = document.getElementById("name1").value;
+let lastname = document.getElementById("lastname").value;
+let table = document.getElementById("table");
+
+let newRow = table.insertRow();
+let nameCell = newRow.insertCell();
+let lastnameCell = newRow.insertCell();
+nameCell.textContent = name;
+lastnameCell.textContent = lastname;
+}
+		</script>
+	</body>
+</html>
